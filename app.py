@@ -1,10 +1,10 @@
-import time
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from sentence_transformers import SentenceTransformer, util
+import time
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS on the Flask app
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 # Load the Sentence Transformer model
 model = SentenceTransformer("all-MiniLM-L6-v2")
