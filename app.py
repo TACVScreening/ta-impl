@@ -41,22 +41,22 @@ def analyze_cv():
     cosine_scores = util.cos_sim(sentence_embeddings_to_compare, combined_embeddings)
     
     top_matches = {}
-    top_similarities = []
+    highest_similarities = []
     
-    # Store top 3 matches for each comparison sentence
+    # Store only the highest match for each comparison sentence
     for idx, comparison_sentence in enumerate(sentences_to_compare):
         sentence_score_pairs = [(combined_sentence, cosine_scores[idx][j].item()) for j, combined_sentence in enumerate(combined_sentences)]
-        sorted_pairs = sorted(sentence_score_pairs, key=lambda x: x[1], reverse=True)
-        top_3_pairs = sorted_pairs[:3]  # Get only top 3 pairs
+        top_pair = max(sentence_score_pairs, key=lambda x: x[1])
         
-        top_matches[comparison_sentence] = [
-            {"cv_sentence": pair[0], "similarity": pair[1]} for pair in top_3_pairs
-        ]
+        top_matches[comparison_sentence] = {
+            "cv_sentence": top_pair[0],
+            "similarity": top_pair[1]
+        }
         
-        top_similarities.append(sorted_pairs[0][1])  # Add the highest similarity for averaging
+        highest_similarities.append(top_pair[1])
     
-    # Calculate the average of the highest similarities for this document
-    average_similarity = sum(top_similarities) / len(top_similarities)
+    # Calculate the average of the highest similarities
+    average_similarity = sum(highest_similarities) / len(highest_similarities)
 
     end_time = time.time()
     processing_time = end_time - start_time
